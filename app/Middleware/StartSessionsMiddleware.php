@@ -28,6 +28,8 @@ class StartSessionsMiddleware implements MiddlewareInterface
       'samesite' => 'lax'
     ]);
 
+
+
     session_start();
 
     $response = $handler->handle($request);
