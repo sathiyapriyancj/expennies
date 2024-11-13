@@ -17,7 +17,6 @@ return function (App $app) {
     $config = $container->get(Config::class);
 
 
-    $app->add(AuthenticateMiddleware::class);
     $app->add(TwigMiddleware::create($app, $container->get(Twig::class)));
     $app->add(ValidationExceptionMiddleware::class);
     $app->add(ValidationErrorsMiddleware::class);
