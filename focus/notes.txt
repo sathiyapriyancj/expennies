@@ -1,0 +1,8 @@
+CURD Complete Guide
+
+To store a data 
+
+1. Validate Request data.
+2. Create a new category record in the database 
+3. Redirect the user.
+
