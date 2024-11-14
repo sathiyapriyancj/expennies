@@ -5,11 +5,13 @@ declare(strict_types=1);
 use App\Auth;
 use App\Config;
 use App\Contracts\AuthInterface;
+use App\Contracts\RequestValidatorFactoryInterface;
 use App\Contracts\SessionInterface;
 use App\Contracts\UserProviderServiceInterface;
 use App\DataObjects\SessionConfig;
 use App\Enum\AppEnvironment;
 use App\Enum\SameSite;
+use App\RequestValidators\RequestValidatorFactory;
 use App\Services\UserProviderService;
 use App\Session;
 use Doctrine\ORM\EntityManager;
@@ -45,7 +47,9 @@ return [
 
         return $app;
     },
-    Config::class => create(Config::class)->constructor(require CONFIG_PATH . '/app.php'),
+    Config::class => create(Config::class)->constructor(
+        require CONFIG_PATH . '/app.php'
+    ),
     EntityManager::class => fn(Config $config) => EntityManager::create(
         $config->get('doctrine.connection'),
         ORMSetup::createAttributeMetadataConfiguration(
@@ -76,7 +80,9 @@ return [
         $container->get('webpack_encore.packages')
     ),
     ResponseFactoryInterface::class => fn(App $app) => $app->getResponseFactory(),
-    AuthInterface::class => fn(ContainerInterface $container) => $container->get(Auth::class),
+    AuthInterface::class => fn(ContainerInterface $container) => $container->get(
+        Auth::class
+    ),
     UserProviderServiceInterface::class => fn(ContainerInterface $container) => $container->get(
         UserProviderService::class
     ),
@@ -88,5 +94,8 @@ return [
             $config->get('session.httponly', true),
             SameSite::from($config->get('session.samesite', 'lax'))
         )
+    ),
+    RequestValidatorFactoryInterface::class => fn(ContainerInterface $container) => $container->get(
+        RequestValidatorFactory::class
     ),
 ];
