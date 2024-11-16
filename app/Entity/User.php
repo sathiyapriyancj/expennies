@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Entity;
 
@@ -42,7 +42,7 @@ class User implements UserInterface
 
     public function __construct()
     {
-        $this->categories = new ArrayCollection();
+        $this->categories   = new ArrayCollection();
         $this->transactions = new ArrayCollection();
     }
 

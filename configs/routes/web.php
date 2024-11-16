@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 use App\Controllers\AuthController;
 use App\Controllers\CategoriesController;
@@ -25,6 +25,8 @@ return function (App $app) {
     $app->group('/categories', function (RouteCollectorProxy $categories) {
         $categories->get('', [CategoriesController::class, 'index']);
         $categories->post('', [CategoriesController::class, 'store']);
-        $categories->delete('/{id}', [CategoriesController::class, 'delete']);
+        $categories->delete('/{id:[0-9]+}', [CategoriesController::class, 'delete']);
+        $categories->get('/{id:[0-9]+}', [CategoriesController::class, 'get']);
+        $categories->post('/{id:[0-9]+}', [CategoriesController::class, 'update']);
     })->add(AuthMiddleware::class);
 };

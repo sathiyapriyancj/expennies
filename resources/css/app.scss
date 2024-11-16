@@ -3,7 +3,7 @@
 @import "~bootstrap-icons/font/bootstrap-icons";
 
 * {
-  font-family: "Roboto", sans-serif !important;
+  font-family: 'Roboto', sans-serif !important;
 }
 
 body {
@@ -20,17 +20,16 @@ svg.icon {
 
   &.active {
     background-color: inherit !important;
-    color: #57585a !important;
+    color: #57585A !important;
   }
 
-  &:hover,
-  &:focus {
-    color: #57585a !important;
+  &:hover, &:focus {
+    color: #57585A !important;
   }
 }
 
 .content-body {
-  background-color: #fefeff;
+  background-color: #FEFEFF;
   min-height: 500px;
   border-radius: 1rem;
   padding: 20px 25px 25px;

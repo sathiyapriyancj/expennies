@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App;
 
@@ -12,77 +12,77 @@ use App\DataObjects\RegisterUserData;
 
 class Auth implements AuthInterface
 {
-  private ?UserInterface $user = null;
+    private ?UserInterface $user = null;
 
-  public function __construct(
-    private readonly UserProviderServiceInterface $userProvider,
-    private readonly SessionInterface $session
-  ) {
-  }
-
-  public function user(): ?UserInterface
-  {
-    if ($this->user !== null) {
-      return $this->user;
+    public function __construct(
+        private readonly UserProviderServiceInterface $userProvider,
+        private readonly SessionInterface $session
+    ) {
     }
 
-    $userId = $this->session->get('user');
+    public function user(): ?UserInterface
+    {
+        if ($this->user !== null) {
+            return $this->user;
+        }
 
-    if (!$userId) {
-      return null;
+        $userId = $this->session->get('user');
+
+        if (! $userId) {
+            return null;
+        }
+
+        $user = $this->userProvider->getById($userId);
+
+        if (! $user) {
+            return null;
+        }
+
+        $this->user = $user;
+
+        return $this->user;
     }
 
-    $user = $this->userProvider->getById($userId);
+    public function attemptLogin(array $credentials): bool
+    {
+        $user = $this->userProvider->getByCredentials($credentials);
 
-    if (!$user) {
-      return null;
+        if (! $user || ! $this->checkCredentials($user, $credentials)) {
+            return false;
+        }
+
+        $this->logIn($user);
+
+        return true;
     }
 
-    $this->user = $user;
-
-    return $this->user;
-  }
-
-  public function attemptLogin(array $credentials): bool
-  {
-    $user = $this->userProvider->getByCredentials($credentials);
-
-    if (!$user || !$this->checkCredentials($user, $credentials)) {
-      return false;
+    public function checkCredentials(UserInterface $user, array $credentials): bool
+    {
+        return password_verify($credentials['password'], $user->getPassword());
     }
 
-    $this->logIn($user);
+    public function logOut(): void
+    {
+        $this->session->forget('user');
+        $this->session->regenerate();
 
-    return true;
-  }
+        $this->user = null;
+    }
 
-  public function checkCredentials(UserInterface $user, array $credentials): bool
-  {
-    return password_verify($credentials['password'], $user->getPassword());
-  }
+    public function register(RegisterUserData $data): UserInterface
+    {
+        $user = $this->userProvider->createUser($data);
 
-  public function logOut(): void
-  {
-    $this->session->forget('user');
-    $this->session->regenerate();
+        $this->logIn($user);
 
-    $this->user = null;
-  }
+        return $user;
+    }
 
-  public function register(RegisterUserData $data): UserInterface
-  {
-    $user = $this->userProvider->createUser($data);
+    public function logIn(UserInterface $user): void
+    {
+        $this->session->regenerate();
+        $this->session->put('user', $user->getId());
 
-    $this->logIn($user);
-
-    return $user;
-  }
-
-  public function logIn(UserInterface $user): void
-  {
-    $this->session->regenerate();
-    $this->session->put('user', $user->getId());
-
-    $this->user = $user;
-  }
+        $this->user = $user;
+    }
 }

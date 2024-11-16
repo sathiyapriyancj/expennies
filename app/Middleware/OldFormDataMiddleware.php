@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\Middleware;
 
@@ -13,18 +13,18 @@ use Slim\Views\Twig;
 
 class OldFormDataMiddleware implements MiddlewareInterface
 {
-  public function __construct(
-    private readonly Twig $twig,
-    private readonly SessionInterface $session
-  ) {
-  }
-
-  public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-  {
-    if ($old = $this->session->getFlash('old')) {
-      $this->twig->getEnvironment()->addGlobal('old', $old);
+    public function __construct(
+        private readonly Twig $twig,
+        private readonly SessionInterface $session
+    ) {
     }
 
-    return $handler->handle($request);
-  }
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+        if ($old = $this->session->getFlash('old')) {
+            $this->twig->getEnvironment()->addGlobal('old', $old);
+        }
+
+        return $handler->handle($request);
+    }
 }

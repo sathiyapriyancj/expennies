@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace App\RequestValidators;
 
@@ -10,17 +10,17 @@ use Valitron\Validator;
 
 class CreateCategoryRequestValidator implements RequestValidatorInterface
 {
-  public function validate(array $data): array
-  {
-    $v = new Validator($data);
+    public function validate(array $data): array
+    {
+        $v = new Validator($data);
 
-    $v->rule('required', 'name');
-    $v->rule('lengthMax', 'name', 50);
+        $v->rule('required', 'name');
+        $v->rule('lengthMax', 'name', 50);
 
-    if (!$v->validate()) {
-      throw new ValidationException($v->errors());
+        if (! $v->validate()) {
+            throw new ValidationException($v->errors());
+        }
+
+        return $data;
     }
-
-    return $data;
-  }
 }
